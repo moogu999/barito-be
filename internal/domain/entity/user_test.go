@@ -5,6 +5,8 @@ import (
 )
 
 func TestNewUser(t *testing.T) {
+	t.Parallel()
+
 	email := "testing@testing.com"
 	password := "testing"
 
@@ -63,6 +65,8 @@ func TestNewUser(t *testing.T) {
 }
 
 func TestVerifyPassword(t *testing.T) {
+	t.Parallel()
+
 	defaultPwd := "testing"
 	user, _ := NewUser("testing@testing.com", defaultPwd)
 	tests := []struct {
