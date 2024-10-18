@@ -15,7 +15,7 @@ func TestNewUser(t *testing.T) {
 		email    string
 		password string
 		want     User
-		wanErr   bool
+		wantErr  bool
 	}{
 		{
 			name:     "success",
@@ -25,14 +25,14 @@ func TestNewUser(t *testing.T) {
 				Email:     email,
 				CreatedBy: email,
 			},
-			wanErr: false,
+			wantErr: false,
 		},
 		{
 			name:     "password is too long",
 			email:    email,
 			password: "7DA1LRHz7KsRCS0dvO5A1CvjE5jDXDh2Z9iPeN1741260y8a9K2ze738aJxOztz7TRQ8lBLdZ",
 			want:     User{},
-			wanErr:   true,
+			wantErr:  true,
 		},
 	}
 
@@ -42,9 +42,9 @@ func TestNewUser(t *testing.T) {
 
 			got, err := NewUser(tt.email, tt.password)
 
-			if tt.wanErr {
+			if tt.wantErr {
 				if err == nil {
-					t.Errorf("NewUser() expected err but got nil")
+					t.Error("NewUser() expected err but got nil")
 				}
 			} else {
 				if tt.want.ID != got.ID {
@@ -57,7 +57,7 @@ func TestNewUser(t *testing.T) {
 					t.Errorf("NewUser().CreatedBy = %s, expected %s", got.CreatedBy, tt.want.CreatedBy)
 				}
 				if got.CreatedAt.IsZero() {
-					t.Errorf("NewUser().CreatedAt.IsZero() == true")
+					t.Error("NewUser().CreatedAt.IsZero() == true")
 				}
 			}
 		})

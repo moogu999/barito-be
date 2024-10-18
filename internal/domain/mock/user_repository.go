@@ -6,12 +6,12 @@ import (
 	"github.com/moogu999/barito-be/internal/domain/entity"
 )
 
-type MockUserRepository struct {
+type UserRepository struct {
 	GetUserByEmailFunc func(ctx context.Context, email string) (*entity.User, error)
 	CreateUserFunc     func(ctx context.Context, user *entity.User) error
 }
 
-func (m MockUserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
+func (m UserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
 	if m.GetUserByEmailFunc != nil {
 		return m.GetUserByEmailFunc(ctx, email)
 	}
@@ -19,7 +19,7 @@ func (m MockUserRepository) GetUserByEmail(ctx context.Context, email string) (*
 	return nil, nil
 }
 
-func (m MockUserRepository) CreateUser(ctx context.Context, user *entity.User) error {
+func (m UserRepository) CreateUser(ctx context.Context, user *entity.User) error {
 	if m.CreateUserFunc != nil {
 		return m.CreateUserFunc(ctx, user)
 	}
