@@ -1,0 +1,11 @@
+oapi: 3.0.1
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "an unexpected error occured"
+      required:
+        - message

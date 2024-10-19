@@ -1,0 +1,56 @@
+openapi: 3.0.1
+info:
+  title: Users
+  version: 0.0.1
+tags:
+  - name: Users
+paths:
+  /v1/users:
+    post:
+      operationId: "createUser"
+      tags:
+        - Users
+      summary: "create a new user"
+      description: "create a new user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+      responses:
+        201:
+          description: "user created"
+        500:
+          description: "unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    NewUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "testing@testing.com"
+        password:
+          type: string
+          example: "testing"
+      required:
+        - email
+        - password
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "ERROR"
+        message:
+          type: string
+          example: "an unexpected error occured"
+      required:
+        - code
+        - message
