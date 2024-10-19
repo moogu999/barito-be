@@ -41,3 +41,25 @@ func (h *httpServer) CreateUser(ctx context.Context, request oapi.CreateUserRequ
 
 	return oapi.CreateUser201Response(oapi.CreateUser201Response{}), nil
 }
+
+func (h *httpServer) CreateSession(ctx context.Context, request oapi.CreateSessionRequestObject) (oapi.CreateSessionResponseObject, error) {
+	id, err := h.svc.CreateSession(ctx, string(request.Body.Email), request.Body.Password)
+	if err != nil {
+		res := oapi.ErrorResponse{
+			Message: err.Error(),
+		}
+
+		if errors.Is(err, entity.ErrNotRegistered) {
+			return oapi.CreateSession404JSONResponse(res), nil
+		}
+		if errors.Is(err, entity.ErrIncorrectPassword) {
+			return oapi.CreateSession401JSONResponse(res), nil
+		}
+
+		return oapi.CreateSession500JSONResponse(res), nil
+	}
+
+	return oapi.CreateSession201JSONResponse(oapi.CreateSession201JSONResponse{
+		Id: id,
+	}), nil
+}

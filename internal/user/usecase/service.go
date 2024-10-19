@@ -8,6 +8,7 @@ import (
 
 type User interface {
 	CreateUser(ctx context.Context, email, password string) error
+	CreateSession(Ctx context.Context, email, password string) (int64, error)
 }
 
 type Service struct {

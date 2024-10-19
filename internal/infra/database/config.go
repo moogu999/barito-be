@@ -9,6 +9,7 @@ import (
 	"github.com/sethvargo/go-envconfig"
 )
 
+// @TODO move file location
 type SQLConfig struct {
 	Username        string        `env:"SQL_USERNAME, required"`
 	Password        string        `env:"SQL_PASSWORD, required"`

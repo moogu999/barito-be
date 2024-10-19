@@ -9,11 +9,13 @@ import (
 	"github.com/moogu999/barito-be/internal/user/domain/repository/mock"
 )
 
-func TestCreateUser(t *testing.T) {
+func TestCreateSession(t *testing.T) {
 	t.Parallel()
 
 	email := "testing@testing.com"
 	password := "testing"
+	user, _ := entity.NewUser(email, password)
+	user.ID = 1
 	err := errors.New("err")
 
 	tests := []struct {
@@ -21,6 +23,7 @@ func TestCreateUser(t *testing.T) {
 		email    string
 		password string
 		mockFunc func(ctx context.Context, mockRepo *mock.UserRepository)
+		want     int64
 		wantErr  bool
 	}{
 		{
@@ -29,33 +32,11 @@ func TestCreateUser(t *testing.T) {
 			password: password,
 			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
-					return nil, nil
+					return &user, nil
 				}
-				mockRepo.CreateUserFunc = func(ctx context.Context, user *entity.User) error { return nil }
 			},
+			want:    1,
 			wantErr: false,
-		},
-		{
-			name:     "email is already being used",
-			email:    email,
-			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
-				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
-					return &entity.User{Email: email}, nil
-				}
-			},
-			wantErr: true,
-		},
-		{
-			name:     "password is too long",
-			email:    email,
-			password: "7DA1LRHz7KsRCS0dvO5A1CvjE5jDXDh2Z9iPeN1741260y8a9K2ze738aJxOztz7TRQ8lBLdZ",
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
-				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
-					return nil, nil
-				}
-			},
-			wantErr: true,
 		},
 		{
 			name:     "repo.GetUserByEmail error",
@@ -66,18 +47,31 @@ func TestCreateUser(t *testing.T) {
 					return nil, err
 				}
 			},
+			want:    0,
 			wantErr: true,
 		},
 		{
-			name:     "repo.CreateUser error",
+			name:     "email is not registered",
 			email:    email,
 			password: password,
 			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, nil
 				}
-				mockRepo.CreateUserFunc = func(ctx context.Context, user *entity.User) error { return err }
 			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name:     "incorrect password",
+			email:    email,
+			password: "1234567890",
+			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
+					return &user, nil
+				}
+			},
+			want:    0,
 			wantErr: true,
 		},
 	}
@@ -93,10 +87,14 @@ func TestCreateUser(t *testing.T) {
 
 			service := NewService(mockRepo)
 
-			err := service.CreateUser(ctx, tt.email, tt.password)
+			got, err := service.CreateSession(ctx, tt.email, tt.password)
 
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateUser() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("CreateSession() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if got != tt.want {
+				t.Errorf("CreateSession() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -31,5 +31,6 @@ func main() {
 		})
 	})
 
+	// @TODO create config file
 	http.ListenAndServe(fmt.Sprintf(":%d", 8080), r)
 }
