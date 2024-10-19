@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/moogu999/barito-be/internal/user/domain/entity"
-	"github.com/moogu999/barito-be/internal/user/domain/mock"
+	"github.com/moogu999/barito-be/internal/user/domain/repository/mock"
 )
 
 func TestCreateUser(t *testing.T) {

@@ -16,14 +16,14 @@ type Dependency struct {
 }
 
 type App struct {
-	HTTP http.Handler
+	Handler http.Handler
 }
 
 func New(dep Dependency) *App {
 	repo := mysql.NewUserRepository(dep.DB)
 	service := usecase.NewService(repo)
-	httpHandler := port.NewHTTP(dep.Router, service)
+	handler := port.NewHandler(dep.Router, service)
 	return &App{
-		HTTP: httpHandler,
+		Handler: handler,
 	}
 }

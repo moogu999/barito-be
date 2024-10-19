@@ -12,7 +12,7 @@ import (
 	"github.com/moogu999/barito-be/internal/user/usecase"
 )
 
-func NewHTTP(r chi.Router, svc usecase.User) http.Handler {
+func NewHandler(r chi.Router, svc usecase.User) http.Handler {
 	si := oapi.NewStrictHandlerWithOptions(&httpServer{svc}, nil, oapi.StrictHTTPServerOptions{
 		RequestErrorHandlerFunc:  response.ErrorHandlerFunc(),
 		ResponseErrorHandlerFunc: response.ErrorHandlerFunc(),
