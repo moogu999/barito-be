@@ -1,11 +1,11 @@
-package user
+package usecase
 
 import (
 	"context"
 	"errors"
 	"strings"
 
-	"github.com/moogu999/barito-be/internal/domain/entity"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
 )
 
 func (s *Service) CreateUser(ctx context.Context, email, password string) error {

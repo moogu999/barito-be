@@ -1,15 +1,15 @@
-package user
+package port
 
 import (
 	"context"
 	"net/http"
 
 	"github.com/moogu999/barito-be/internal/common/response"
-	"github.com/moogu999/barito-be/internal/infra/port/user/oapi"
-	"github.com/moogu999/barito-be/internal/usecase/user"
+	"github.com/moogu999/barito-be/internal/user/port/oapi"
+	"github.com/moogu999/barito-be/internal/user/usecase"
 )
 
-func NewHTTP(svc user.Service) *http.ServeMux {
+func NewHTTP(svc usecase.User) *http.ServeMux {
 	si := oapi.NewStrictHandlerWithOptions(&httpServer{svc}, nil, oapi.StrictHTTPServerOptions{
 		RequestErrorHandlerFunc:  response.ErrorHandlerFunc(),
 		ResponseErrorHandlerFunc: response.ErrorHandlerFunc(),
@@ -21,7 +21,7 @@ func NewHTTP(svc user.Service) *http.ServeMux {
 }
 
 type httpServer struct {
-	svc user.Service
+	svc usecase.User
 }
 
 func (h *httpServer) CreateUser(ctx context.Context, request oapi.CreateUserRequestObject) (oapi.CreateUserResponseObject, error) {

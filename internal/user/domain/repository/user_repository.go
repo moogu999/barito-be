@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/moogu999/barito-be/internal/domain/entity"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
 )
 
 type UserRepository interface {

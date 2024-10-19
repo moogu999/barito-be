@@ -1,12 +1,12 @@
-package user
+package usecase
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"github.com/moogu999/barito-be/internal/domain/entity"
-	"github.com/moogu999/barito-be/internal/domain/mock"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
+	"github.com/moogu999/barito-be/internal/user/domain/mock"
 )
 
 func TestCreateUser(t *testing.T) {
