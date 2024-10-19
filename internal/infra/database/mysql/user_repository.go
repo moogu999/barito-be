@@ -3,12 +3,11 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/moogu999/barito-be/internal/domain/entity"
-	"github.com/moogu999/barito-be/internal/domain/repository"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
+	"github.com/moogu999/barito-be/internal/user/domain/repository"
 )
 
 type UserModel struct {
@@ -51,7 +50,6 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*ent
 
 	rows, err := r.db.QueryContext(ctx, q, args...)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()

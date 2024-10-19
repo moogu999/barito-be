@@ -45,12 +45,8 @@ components:
     ErrorResponse:
       type: object
       properties:
-        code:
-          type: string
-          example: "ERROR"
         message:
           type: string
           example: "an unexpected error occured"
       required:
-        - code
         - message

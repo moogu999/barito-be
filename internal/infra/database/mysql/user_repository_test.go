@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/moogu999/barito-be/internal/domain/entity"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
 )
 
 func TestGetUserByEmail(t *testing.T) {

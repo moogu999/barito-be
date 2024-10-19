@@ -10,7 +10,6 @@ import (
 )
 
 type SQLConfig struct {
-	Driver          string        `env:"SQL_DRIVER, required"`
 	Username        string        `env:"SQL_USERNAME, required"`
 	Password        string        `env:"SQL_PASSWORD, required"`
 	Host            string        `env:"SQL_HOST, required"`

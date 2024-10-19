@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func NewSQL() *sql.DB {
 	cfg := LoadSQLConfig()
 
-	db, err := sql.Open(cfg.Driver, fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=false&parseTime=true",
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=false&parseTime=true",
 		cfg.Username,
 		cfg.Password,
 		cfg.Host,

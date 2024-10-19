@@ -4,20 +4,19 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/moogu999/barito-be/internal/common/response"
 	"github.com/moogu999/barito-be/internal/user/port/oapi"
 	"github.com/moogu999/barito-be/internal/user/usecase"
 )
 
-func NewHTTP(svc usecase.User) *http.ServeMux {
+func NewHTTP(r chi.Router, svc usecase.User) http.Handler {
 	si := oapi.NewStrictHandlerWithOptions(&httpServer{svc}, nil, oapi.StrictHTTPServerOptions{
 		RequestErrorHandlerFunc:  response.ErrorHandlerFunc(),
 		ResponseErrorHandlerFunc: response.ErrorHandlerFunc(),
 	})
 
-	mux := http.NewServeMux()
-	oapi.HandlerFromMux(si, mux)
-	return mux
+	return oapi.HandlerFromMux(si, r)
 }
 
 type httpServer struct {
