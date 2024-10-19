@@ -2,10 +2,12 @@ package port
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/moogu999/barito-be/internal/common/response"
+	"github.com/moogu999/barito-be/internal/user/domain/entity"
 	"github.com/moogu999/barito-be/internal/user/port/oapi"
 	"github.com/moogu999/barito-be/internal/user/usecase"
 )
@@ -26,9 +28,15 @@ type httpServer struct {
 func (h *httpServer) CreateUser(ctx context.Context, request oapi.CreateUserRequestObject) (oapi.CreateUserResponseObject, error) {
 	err := h.svc.CreateUser(ctx, string(request.Body.Email), request.Body.Password)
 	if err != nil {
-		return oapi.CreateUser500JSONResponse(oapi.ErrorResponse{
+		res := oapi.ErrorResponse{
 			Message: err.Error(),
-		}), nil
+		}
+
+		if errors.Is(err, entity.ErrEmailIsUsed) {
+			return oapi.CreateUser409JSONResponse(res), nil
+		}
+
+		return oapi.CreateUser500JSONResponse(res), nil
 	}
 
 	return oapi.CreateUser201Response(oapi.CreateUser201Response{}), nil

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"strings"
 
 	"github.com/moogu999/barito-be/internal/user/domain/entity"
@@ -15,7 +14,7 @@ func (s *Service) CreateUser(ctx context.Context, email, password string) error 
 	}
 
 	if existingUser != nil && strings.EqualFold(existingUser.Email, email) {
-		return errors.New("email is already being used")
+		return entity.ErrEmailIsUsed
 	}
 
 	newUser, err := entity.NewUser(email, password)
