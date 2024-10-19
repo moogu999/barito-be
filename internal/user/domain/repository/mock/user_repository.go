@@ -6,6 +6,7 @@ import (
 	"github.com/moogu999/barito-be/internal/user/domain/entity"
 )
 
+// @TODO rename
 type UserRepository struct {
 	GetUserByEmailFunc func(ctx context.Context, email string) (*entity.User, error)
 	CreateUserFunc     func(ctx context.Context, user *entity.User) error

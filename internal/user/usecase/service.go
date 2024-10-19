@@ -6,6 +6,7 @@ import (
 	"github.com/moogu999/barito-be/internal/user/domain/repository"
 )
 
+// @TODO rename
 type User interface {
 	CreateUser(ctx context.Context, email, password string) error
 	CreateSession(Ctx context.Context, email, password string) (int64, error)
