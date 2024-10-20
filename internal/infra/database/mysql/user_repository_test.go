@@ -184,3 +184,109 @@ func TestCreateUser(t *testing.T) {
 		})
 	}
 }
+
+func TestGetUserByID(t *testing.T) {
+	t.Parallel()
+
+	query := `SELECT id, email, password, created_at, created_by FROM users WHERE id = ?`
+	email := "testing@testing.com"
+	var id int64 = 1
+	now := time.Now()
+	err := errors.New("err")
+
+	tests := []struct {
+		name    string
+		setup   func(mockDB sqlmock.Sqlmock)
+		id      int64
+		want    *entity.User
+		wantErr bool
+	}{
+		{
+			name: "success",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WithArgs(id).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "email", "password", "created_at", "created_by"}).
+						AddRow(1, email, "testing", now, email))
+			},
+			id: id,
+			want: &entity.User{
+				ID:        1,
+				Email:     email,
+				Password:  "testing",
+				CreatedAt: now,
+				CreatedBy: email,
+			},
+			wantErr: false,
+		},
+		{
+			name: "failed to query",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WillReturnError(err)
+			},
+			id:      id,
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "failed to scan",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WithArgs(id).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "email", "password", "created_at", "created_by"}).
+						AddRow(1, email, "testing", nil, email))
+			},
+			id:      id,
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "no match",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WithArgs(id).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "email", "password", "created_at", "created_by"}))
+			},
+			id:      id,
+			want:    nil,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx := context.Background()
+
+			db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+			if err != nil {
+				t.Fatal("error mocking sql")
+			}
+			defer db.Close()
+
+			tt.setup(mock)
+
+			repo := NewUserRepository(db)
+
+			got, err := repo.GetUserByID(ctx, tt.id)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetUserByID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if !reflect.DeepEqual(tt.want, got) && !tt.wantErr {
+				t.Errorf("GetUserByID() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -43,7 +43,7 @@ func TestFindBooks(t *testing.T) {
 							Title:  "John",
 							Author: "Doe",
 							ISBN:   "testing",
-							Stock:  100,
+							Price:  100.0,
 						},
 					}, nil
 				}

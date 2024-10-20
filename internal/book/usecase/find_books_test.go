@@ -24,7 +24,7 @@ func TestFindBooks(t *testing.T) {
 			Title:  "john",
 			Author: "doe",
 			ISBN:   "testing",
-			Stock:  100,
+			Price:  100.0,
 		},
 	}
 	err := errors.New("err")

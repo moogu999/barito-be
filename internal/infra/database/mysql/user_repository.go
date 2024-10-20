@@ -104,3 +104,45 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *entity.User) erro
 
 	return nil
 }
+
+func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*entity.User, error) {
+	builder := sq.Select("id", "email", "password", "created_at", "created_by").
+		From("users").
+		Where(sq.Eq{"id": id})
+
+	q, args, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.QueryContext(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := make([]UserModel, 0)
+	for rows.Next() {
+		var user UserModel
+		err = rows.Scan(
+			&user.id,
+			&user.email,
+			&user.password,
+			&user.createdAt,
+			&user.createdBy,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	if len(users) == 0 {
+		return nil, nil
+	}
+
+	user := users[0].toUserEntity()
+
+	return &user, nil
+}
