@@ -11,6 +11,6 @@ type BookFilter struct {
 	Author string
 }
 
-type BookRepostiroy interface {
+type BookRepository interface {
 	FindBooks(ctx context.Context, params BookFilter) ([]*entity.Book, error)
 }

@@ -19,6 +19,7 @@ type App struct {
 	Handler http.Handler
 }
 
+// @TODO rename
 func New(dep Dependency) *App {
 	repo := mysql.NewUserRepository(dep.DB)
 	service := usecase.NewService(repo)

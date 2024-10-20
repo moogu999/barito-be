@@ -12,10 +12,10 @@ type BookUseCase interface {
 }
 
 type Service struct {
-	repo repository.BookRepostiroy
+	repo repository.BookRepository
 }
 
-func NewService(repo repository.BookRepostiroy) *Service {
+func NewService(repo repository.BookRepository) *Service {
 	return &Service{
 		repo: repo,
 	}

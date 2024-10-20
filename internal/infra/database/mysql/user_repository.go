@@ -10,6 +10,7 @@ import (
 	"github.com/moogu999/barito-be/internal/user/domain/repository"
 )
 
+// @TODO refactor this
 type UserModel struct {
 	id        int64
 	email     string
