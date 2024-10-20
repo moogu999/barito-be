@@ -1,4 +1,3 @@
-# TODO remove double quotes
 openapi: 3.0.1
 info:
   title: Users
@@ -8,66 +7,66 @@ tags:
 paths:
   /v1/users:
     post:
-      operationId: "createUser"
+      operationId: createUser
       tags:
         - Users
-      summary: "create a new user"
-      description: "create a new user"
+      summary: create a new user
+      description: create a new user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewUser"
+              $ref: '#/components/schemas/NewUser'
       responses:
         201:
-          description: "user created"
+          description: user created
         409:
-          description: "email is already being used"
+          description: email is already being used
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         500:
-          description: "unexpected error"
+          description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /v1/sessions:
     post:
-      operationId: "createSession"
+      operationId: createSession
       tags:
         - Users
-      summary: "create a new user's session"
-      description: "create a new user's session"
+      summary: create a new user's session
+      description: create a new user's session
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewUser"
+              $ref: '#/components/schemas/NewUser'
       responses:
         201:
-          description: "user created"
+          description: user created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateSessionResponse'
         404:
-          description: "email is not registered"
+          description: email is not registered
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         401:
-          description: "incorrect password"
+          description: incorrect password
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         500:
-          description: "unexpected error"
+          description: unexpected error
           content:
             application/json:
               schema:
@@ -80,10 +79,10 @@ components:
         email:
           type: string
           format: email
-          example: "testing@testing.com"
+          example: testing@testing.com
         password:
           type: string
-          example: "testing"
+          example: testing
       required:
         - email
         - password
@@ -92,7 +91,7 @@ components:
       properties:
         message:
           type: string
-          example: "an unexpected error occured"
+          example: an unexpected error occured
       required:
         - message
     CreateSessionResponse:

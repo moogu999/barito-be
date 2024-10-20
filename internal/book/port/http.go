@@ -49,6 +49,7 @@ func (h *httpServer) FindBooks(ctx context.Context, request oapi.FindBooksReques
 			Title:  val.Title,
 			Author: val.Author,
 			Isbn:   val.ISBN,
+			Price:  val.Price,
 		})
 	}
 

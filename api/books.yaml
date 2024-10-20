@@ -61,11 +61,15 @@ components:
         isbn:
           type: string
           example: 978-3-16-148410-0
+        price:
+          type: number
+          format: double
       required:
         - id
         - title
         - author
         - isbn
+        - price
     ErrorResponse:
       type: object
       properties:

@@ -6,6 +6,6 @@ components:
       properties:
         message:
           type: string
-          example: "an unexpected error occured"
+          example: an unexpected error occured
       required:
         - message
