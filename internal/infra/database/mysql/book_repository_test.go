@@ -14,7 +14,7 @@ import (
 func TestFindBooks(t *testing.T) {
 	t.Parallel()
 
-	query := `SELECT id, title, author, isbn, stock FROM books WHERE author = ? AND title = ?`
+	query := `SELECT id, title, author, isbn, price FROM books WHERE author = ? AND title = ?`
 	title := "john"
 	author := "doe"
 	filter := repository.BookFilter{
@@ -37,8 +37,8 @@ func TestFindBooks(t *testing.T) {
 
 				mockDB.ExpectQuery(query).
 					WithArgs(author, title).
-					WillReturnRows(sqlmock.NewRows([]string{"id", "title", "author", "isbn", "stock"}).
-						AddRow(1, title, author, "testing", 100))
+					WillReturnRows(sqlmock.NewRows([]string{"id", "title", "author", "isbn", "price"}).
+						AddRow(1, title, author, "testing", 100, 10.0))
 			},
 			filter: filter,
 			want: []*entity.Book{
@@ -47,7 +47,7 @@ func TestFindBooks(t *testing.T) {
 					Title:  title,
 					Author: author,
 					ISBN:   "testing",
-					Stock:  100,
+					Price:  100.0,
 				},
 			},
 			wantErr: false,
@@ -71,8 +71,8 @@ func TestFindBooks(t *testing.T) {
 
 				mockDB.ExpectQuery(query).
 					WithArgs(author, title).
-					WillReturnRows(sqlmock.NewRows([]string{"id", "title", "author", "isbn", "stock"}).
-						AddRow(1, title, author, "testing", nil))
+					WillReturnRows(sqlmock.NewRows([]string{"id", "title", "author", "isbn", "price"}).
+						AddRow(1, title, author, "testing", nil, 10.0))
 			},
 			filter:  filter,
 			want:    nil,

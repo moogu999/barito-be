@@ -20,7 +20,7 @@ func NewBookRepository(db *sql.DB) repository.BookRepository {
 }
 
 func (r *BookRepository) FindBooks(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error) {
-	builder := sq.Select("id", "title", "author", "isbn", "stock").
+	builder := sq.Select("id", "title", "author", "isbn", "price").
 		From("books")
 
 	if params.Author != "" {
@@ -50,7 +50,7 @@ func (r *BookRepository) FindBooks(ctx context.Context, params repository.BookFi
 			&book.Title,
 			&book.Author,
 			&book.ISBN,
-			&book.Stock,
+			&book.Price,
 		)
 		if err != nil {
 			return nil, err

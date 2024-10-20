@@ -13,4 +13,5 @@ type BookFilter struct {
 
 type BookRepository interface {
 	FindBooks(ctx context.Context, params BookFilter) ([]*entity.Book, error)
+	GetBooksByIDs(ctx context.Context, ids []int64) ([]*entity.Book, error)
 }
