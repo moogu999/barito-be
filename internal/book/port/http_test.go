@@ -60,6 +60,34 @@ func TestFindBooks(t *testing.T) {
 			},
 			wantStatusCode: http.StatusInternalServerError,
 		},
+		{
+			name: "empty author",
+			request: oapi.FindBooksRequestObject{
+				Params: oapi.FindBooksParams{
+					Title: &title,
+				},
+			},
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
+				mockService.FindBooksFunc = func(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error) {
+					return nil, nil
+				}
+			},
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name: "empty title",
+			request: oapi.FindBooksRequestObject{
+				Params: oapi.FindBooksParams{
+					Author: &author,
+				},
+			},
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
+				mockService.FindBooksFunc = func(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error) {
+					return nil, nil
+				}
+			},
+			wantStatusCode: http.StatusOK,
+		},
 	}
 
 	for _, tt := range tests {

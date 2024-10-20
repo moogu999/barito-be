@@ -25,10 +25,17 @@ type httpServer struct {
 }
 
 func (h *httpServer) FindBooks(ctx context.Context, request oapi.FindBooksRequestObject) (oapi.FindBooksResponseObject, error) {
-	data, err := h.svc.FindBooks(ctx, repository.BookFilter{
-		Author: *request.Params.Author,
-		Title:  *request.Params.Title,
-	})
+	filter := repository.BookFilter{}
+
+	if request.Params.Author != nil {
+		filter.Author = *request.Params.Author
+	}
+
+	if request.Params.Title != nil {
+		filter.Title = *request.Params.Title
+	}
+
+	data, err := h.svc.FindBooks(ctx, filter)
 	if err != nil {
 		return oapi.FindBooks500JSONResponse(oapi.ErrorResponse{
 			Message: err.Error(),
