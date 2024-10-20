@@ -44,7 +44,7 @@ func TestNewUser(t *testing.T) {
 
 			if tt.wantErr {
 				if err == nil {
-					t.Error("NewUser() expected err but got nil")
+					t.Error("NewUser() expected err but got nil") // @TODO rename expected
 				}
 			} else {
 				if tt.want.ID != got.ID {
