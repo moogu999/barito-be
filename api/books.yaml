@@ -1,0 +1,85 @@
+openapi: 3.0.1
+info:
+  title: Books
+  version: 0.0.1
+tags:
+  - name: Books
+paths:
+  /v1/books:
+    get:
+      operationId: findBooks
+      tags:
+        - Books
+      summary: find books
+      description: find books
+      parameters:
+        - name: author
+          in: query
+          schema:
+            type: string
+        - name: title
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: books found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindBooksResponse'
+        500:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    FindBooksResponse:
+      type: object
+      properties:
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+      required:
+        - books
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: John
+        author:
+          type: string
+          example: Doe
+        isbn:
+          type: string
+          example: 978-3-16-148410-0
+      required:
+        - id
+        - title
+        - author
+        - isbn
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: an unexpected error occured
+      required:
+        - message
+    CreateSessionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+      required:
+        - id

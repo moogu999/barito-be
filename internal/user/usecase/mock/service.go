@@ -2,6 +2,7 @@ package mock
 
 import "context"
 
+// @TODO rename
 type Service struct {
 	CreateUserFunc    func(ctx context.Context, email, password string) error
 	CreateSessionFunc func(ctx context.Context, email, password string) (int64, error)
