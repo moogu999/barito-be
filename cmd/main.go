@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/moogu999/barito-be/internal/book"
 	"github.com/moogu999/barito-be/internal/infra/database"
 	"github.com/moogu999/barito-be/internal/user"
 )
@@ -26,6 +27,10 @@ func main() {
 
 	r.Route("/", func(r chi.Router) {
 		user.New(user.Dependency{
+			DB:     db,
+			Router: r,
+		})
+		book.NewApp(book.Dependency{
 			DB:     db,
 			Router: r,
 		})
