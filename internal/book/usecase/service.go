@@ -8,6 +8,8 @@ import (
 )
 
 type BookUseCase interface {
+	// FindBooks return the books available in the system.
+	// They can be filtered by author and title.
 	FindBooks(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error)
 }
 

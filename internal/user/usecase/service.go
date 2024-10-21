@@ -7,7 +7,12 @@ import (
 )
 
 type UserUseCase interface {
+	// CreateUser registered a new user.
+	// If an email is already registered to another user, it will return an error.
 	CreateUser(ctx context.Context, email, password string) error
+
+	// CreateSession logged in a user. It will return the user ID.
+	// If the user is not found, it will return an error.
 	CreateSession(Ctx context.Context, email, password string) (int64, error)
 }
 

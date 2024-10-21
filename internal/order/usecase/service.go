@@ -10,7 +10,13 @@ import (
 )
 
 type OrderUseCase interface {
+	// CreateOrder create a new order for a user.
+	// If user is not found, it will return an error.
+	// If book is nout found, it will return an error.
+	// If purchase quantity per item is less than it will return an error.
 	CreateOrder(ctx context.Context, userID int64, items []CartItem) (int64, error)
+
+	// FindOrders return all the orders a user had made.
 	FindOrders(ctx context.Context, userID int64) ([]*entity.Order, error)
 }
 

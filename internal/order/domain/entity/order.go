@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Order represents an order in the system
 type Order struct {
 	ID          int64
 	UserID      int64
@@ -13,6 +14,10 @@ type Order struct {
 	CreatedAt   time.Time
 }
 
+// New order return a new order.
+// Itgroups together items with the same bookID
+// and calculates the total amount for the order.
+// If the item quantity is less than 1, it will return an error.
 func NewOrder(userID int64, items []OrderItem) (Order, error) {
 	itemsMap := make(map[int64]OrderItem)
 

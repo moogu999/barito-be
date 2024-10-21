@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// User represents a user in the system.
 type User struct {
 	ID        int64
 	Email     string
@@ -14,6 +15,8 @@ type User struct {
 	CreatedAt time.Time
 }
 
+// NewUser return a new user.
+// It can only accept password with length up to 72 bytes.
 func NewUser(email, password string) (User, error) {
 	hashedPwd, err := hashPassword(password)
 	if err != nil {
@@ -33,6 +36,7 @@ func hashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
+// VerifyPassword compare user's hashed password with the plain password given.
 func (u User) VerifyPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil

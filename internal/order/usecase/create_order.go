@@ -9,6 +9,7 @@ import (
 	userEntity "github.com/moogu999/barito-be/internal/user/domain/entity"
 )
 
+// CartItem represents an item a user wishes to buy
 type CartItem struct {
 	BookID int64
 	Qty    int
@@ -23,6 +24,7 @@ func (s *Service) CreateOrder(ctx context.Context, userID int64, cartItems []Car
 		books   []*bookEntity.Book
 	)
 
+	// Fetch user and books concurrently.
 	go func() {
 		defer func() {
 			wg.Wait()
@@ -56,6 +58,7 @@ func (s *Service) CreateOrder(ctx context.Context, userID int64, cartItems []Car
 		return 0, userEntity.ErrUserNotFound
 	}
 
+	// 1 or all of the books are not found.
 	if len(bookIDs) != len(books) {
 		return 0, bookEntity.ErrBooksNotFound
 	}
@@ -96,6 +99,7 @@ func (s *Service) CreateOrder(ctx context.Context, userID int64, cartItems []Car
 	return order.ID, nil
 }
 
+// getUniqueBookIDs returns all the unique book ids a user wishes to purchase.
 func getUniqueBookIDs(items []CartItem) []int64 {
 	idsMap := getBookIDsMap(items)
 
@@ -107,6 +111,8 @@ func getUniqueBookIDs(items []CartItem) []int64 {
 	return ids
 }
 
+// constructOrderItems combines the cart items and books
+// to generate the order detail.
 func constructOrderItems(cartItems []CartItem, books []*bookEntity.Book) []entity.OrderItem {
 	idsMap := getBookIDsMap(cartItems)
 
@@ -122,6 +128,9 @@ func constructOrderItems(cartItems []CartItem, books []*bookEntity.Book) []entit
 	return items
 }
 
+// getBookIDsMap returns a map with book ID as it keys
+// and the purchase quantity as it values.
+// It groups together item with the same book ID.
 func getBookIDsMap(items []CartItem) map[int64]int {
 	idsMap := make(map[int64]int, len(items))
 	for _, val := range items {
