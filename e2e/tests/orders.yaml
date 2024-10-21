@@ -44,7 +44,25 @@ vars:
       }
   newOrderWithUnregisteredBooks: >-
       {
-        "userId": 9999,
+        "userId": {{.createANewSession.userId}},
+        "items": [
+          {
+            "bookId": 9999,
+            "qty": 1
+          },
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 2,
+            "qty": 1
+          }
+        ]
+      }
+  newOrderWithInvalidQuantity: >-
+      {
+        "userId": {{.createANewSession.userId}},
         "items": [
           {
             "bookId": 1,
@@ -52,10 +70,10 @@ vars:
           },
           {
             "bookId": 1,
-            "qty": 1
+            "qty": -11
           },
           {
-            "bookId": 9999,
+            "bookId": 2,
             "qty": 1
           }
         ]
@@ -126,11 +144,24 @@ testcases:
     headers:
       Content-Type: application/json
     url: "{{.url}}/v1/orders"
-    body: '{{.newOrderWithUnregisteredUser}}'
+    body: '{{.newOrderWithUnregisteredBooks}}'
     retry: 1
     delay: 2
     assertions:
     - result.statuscode ShouldEqual 404
+
+- name: invalid purchase quantity
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/orders"
+    body: '{{.newOrderWithInvalidQuantity}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 422
 
 - name: get user orders
   steps:
