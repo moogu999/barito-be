@@ -8,11 +8,12 @@ import (
 )
 
 type MockOrderRepository struct {
-	BeginTxFunc         func(ctx context.Context) (*sql.Tx, error)
-	CommitTxFunc        func(tx *sql.Tx) error
-	RollbackTxFunc      func(tx *sql.Tx) error
-	CreateOrderFunc     func(ctx context.Context, tx *sql.Tx, order *entity.Order) error
-	CreateOrderItemFunc func(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error
+	BeginTxFunc           func(ctx context.Context) (*sql.Tx, error)
+	CommitTxFunc          func(tx *sql.Tx) error
+	RollbackTxFunc        func(tx *sql.Tx) error
+	CreateOrderFunc       func(ctx context.Context, tx *sql.Tx, order *entity.Order) error
+	GetOrdersByUserIDFunc func(ctx context.Context, userID int64) ([]*entity.Order, error)
+	CreateOrderItemFunc   func(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error
 }
 
 func (m MockOrderRepository) BeginTx(ctx context.Context) (*sql.Tx, error) {
@@ -53,4 +54,12 @@ func (m MockOrderRepository) CreateOrderItem(ctx context.Context, tx *sql.Tx, or
 	}
 
 	return nil
+}
+
+func (m MockOrderRepository) GetOrdersByUserID(ctx context.Context, userID int64) ([]*entity.Order, error) {
+	if m.GetOrdersByUserIDFunc != nil {
+		return m.GetOrdersByUserIDFunc(ctx, userID)
+	}
+
+	return nil, nil
 }

@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"errors"
+	"reflect"
 	"testing"
 	"time"
 
@@ -280,6 +281,110 @@ func TestCreateOrderItem(t *testing.T) {
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateOrderItem() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestGetOrdersByUserID(t *testing.T) {
+	t.Parallel()
+
+	query := `SELECT o.id, o.user_id, u.email, i.id AS item_id, i.book_id, b.title, b.author, i.qty, i.price, o.total_amount, o.created_at FROM orders o JOIN users u ON o.user_id = u.id JOIN order_items i ON o.id = i.order_id JOIN books b ON i.book_id = b.id WHERE o.user_id = ?`
+	var userID int64 = 1
+	now := time.Now()
+	err := errors.New("err")
+
+	tests := []struct {
+		name    string
+		setup   func(mockDB sqlmock.Sqlmock)
+		userID  int64
+		want    []*entity.Order
+		wantErr bool
+	}{
+		{
+			name: "success",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WithArgs(userID).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "email", "item_id", "book_id", "title", "author", "qty", "price", "total_amount", "created_at"}).
+						AddRow(1, 1, "testing@testing.com", 1, 1, "John", "Doe", 1, 10.0, 10.0, now))
+			},
+			userID: userID,
+			want: []*entity.Order{
+				{
+					ID:     1,
+					UserID: 1,
+					Email:  "testing@testing.com",
+					Items: []entity.OrderItem{
+						{
+							ID:     1,
+							BookID: 1,
+							Title:  "John",
+							Author: "Doe",
+							Qty:    1,
+							Price:  10.0,
+						},
+					},
+					TotalAmount: 10.0,
+					CreatedAt:   now,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "failed to query",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WillReturnError(err)
+			},
+			userID:  userID,
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "failed to scan",
+			setup: func(mockDB sqlmock.Sqlmock) {
+				query := query
+
+				mockDB.ExpectQuery(query).
+					WithArgs(userID).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "email", "item_id", "book_id", "title", "author", "qty", "price", "total_amount", "created_at"}).
+						AddRow(1, 1, "testing@testing.com", 1, 1, "John", "Doe", 1, 10.0, nil, now))
+			},
+			userID:  userID,
+			want:    nil,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx := context.Background()
+
+			db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+			if err != nil {
+				t.Fatal("error mocking sql")
+			}
+			defer db.Close()
+
+			tt.setup(mock)
+
+			repo := NewOrderRepository(db)
+
+			got, err := repo.GetOrdersByUserID(ctx, tt.userID)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetOrdersByUserID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if !reflect.DeepEqual(tt.want, got) && !tt.wantErr {
+				t.Errorf("GetOrdersByUserID() = %v, want %v", got, tt.want)
 			}
 		})
 	}

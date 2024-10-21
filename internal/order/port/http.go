@@ -11,6 +11,7 @@ import (
 	"github.com/moogu999/barito-be/internal/order/port/oapi"
 	"github.com/moogu999/barito-be/internal/order/usecase"
 	userEntity "github.com/moogu999/barito-be/internal/user/domain/entity"
+	"github.com/oapi-codegen/runtime/types"
 )
 
 func NewHandler(r chi.Router, svc usecase.OrderUseCase) http.Handler {
@@ -51,4 +52,37 @@ func (h *httpServer) CreateOrder(ctx context.Context, request oapi.CreateOrderRe
 	return oapi.CreateOrder201JSONResponse(oapi.CreateOrder201JSONResponse{
 		Id: id,
 	}), nil
+}
+
+func (h *httpServer) FindOrders(ctx context.Context, request oapi.FindOrdersRequestObject) (oapi.FindOrdersResponseObject, error) {
+	orders, err := h.svc.FindOrders(ctx, request.Params.UserId)
+	if err != nil {
+		return oapi.FindOrders500JSONResponse(oapi.CreateOrder500JSONResponse{Message: err.Error()}), nil
+	}
+
+	res := make([]oapi.Order, len(orders))
+	for _, val := range orders {
+		items := make([]oapi.ItemResponse, len(val.Items))
+		for _, item := range val.Items {
+			items = append(items, oapi.ItemResponse{
+				Id:     &item.ID,
+				BookId: &item.BookID,
+				Title:  &item.Title,
+				Author: &item.Author,
+				Qty:    &item.Qty,
+				Price:  &item.Price,
+			})
+		}
+
+		res = append(res, oapi.Order{
+			Id:          val.ID,
+			UserId:      val.UserID,
+			Email:       types.Email(val.Email),
+			Items:       items,
+			TotalAmount: val.TotalAmount,
+			CreatedAt:   val.CreatedAt,
+		})
+	}
+
+	return oapi.FindOrders200JSONResponse(oapi.FindOrders200JSONResponse{Orders: res}), nil
 }

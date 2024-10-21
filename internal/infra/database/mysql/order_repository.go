@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/moogu999/barito-be/internal/order/domain/entity"
@@ -77,4 +78,97 @@ func (r *OrderRepository) CreateOrderItem(ctx context.Context, tx *sql.Tx, order
 	item.ID = id
 
 	return nil
+}
+
+func (r *OrderRepository) GetOrdersByUserID(ctx context.Context, userID int64) ([]*entity.Order, error) {
+	builder := sq.
+		Select(
+			"o.id",
+			"o.user_id",
+			"u.email",
+			"i.id AS item_id",
+			"i.book_id",
+			"b.title",
+			"b.author",
+			"i.qty",
+			"i.price",
+			"o.total_amount",
+			"o.created_at").
+		From("orders o").
+		Join("users u ON o.user_id = u.id").
+		Join("order_items i ON o.id = i.order_id").
+		Join("books b ON i.book_id = b.id").
+		Where(sq.Eq{"o.user_id": userID})
+
+	q, args, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.QueryContext(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	ordersMap := make(map[int64]*entity.Order)
+	for rows.Next() {
+		var (
+			id          int64
+			userID      int64
+			email       string
+			itemID      int64
+			bookID      int64
+			title       string
+			author      string
+			qty         int
+			price       float64
+			totalAmount float64
+			createdAt   time.Time
+		)
+
+		err = rows.Scan(
+			&id,
+			&userID,
+			&email,
+			&itemID,
+			&bookID,
+			&title,
+			&author,
+			&qty,
+			&price,
+			&totalAmount,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if _, ok := ordersMap[id]; !ok {
+			ordersMap[id] = &entity.Order{
+				ID:          id,
+				UserID:      userID,
+				Email:       email,
+				Items:       []entity.OrderItem{},
+				TotalAmount: totalAmount,
+				CreatedAt:   createdAt,
+			}
+		}
+
+		ordersMap[id].Items = append(ordersMap[id].Items, entity.OrderItem{
+			ID:     itemID,
+			BookID: bookID,
+			Title:  title,
+			Author: author,
+			Qty:    qty,
+			Price:  price,
+		})
+	}
+
+	orders := make([]*entity.Order, 0)
+	for _, order := range ordersMap {
+		orders = append(orders, order)
+	}
+
+	return orders, nil
 }

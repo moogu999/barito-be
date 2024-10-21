@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"testing"
 
 	bookEntity "github.com/moogu999/barito-be/internal/book/domain/entity"
@@ -266,7 +265,7 @@ func TestCreateOrder(t *testing.T) {
 			service := NewService(mockOrderRepo, mockUserRepo, mockBookRepo)
 
 			got, err := service.CreateOrder(ctx, tt.userID, tt.cartItems)
-			fmt.Println(err)
+
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateOrder() error = %v, wantErr %v", err, tt.wantErr)
 			}

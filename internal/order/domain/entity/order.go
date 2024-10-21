@@ -7,6 +7,7 @@ import (
 type Order struct {
 	ID          int64
 	UserID      int64
+	Email       string
 	Items       []OrderItem
 	TotalAmount float64
 	CreatedAt   time.Time
