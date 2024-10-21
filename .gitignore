@@ -24,3 +24,5 @@ go.work.sum
 .env
 
 *gen.go
+
+e2e/results
