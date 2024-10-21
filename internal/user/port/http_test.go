@@ -19,6 +19,7 @@ import (
 func TestCreateUser(t *testing.T) {
 	t.Parallel()
 
+	// @TODO update the request
 	request := oapi.CreateUserRequestObject{
 		Body: &oapi.NewUser{
 			Email:    types.Email("testing@testing.com"),
