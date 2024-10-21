@@ -13,11 +13,15 @@ type Order struct {
 	CreatedAt   time.Time
 }
 
-func NewOrder(userID int64, items []OrderItem) Order {
+func NewOrder(userID int64, items []OrderItem) (Order, error) {
 	itemsMap := make(map[int64]OrderItem)
 
 	totalAmount := 0.0
 	for _, val := range items {
+		if val.Qty < 1 {
+			return Order{}, ErrInvalidQuantity
+		}
+
 		totalAmount += val.Price
 
 		if item, ok := itemsMap[val.BookID]; ok {
@@ -38,5 +42,5 @@ func NewOrder(userID int64, items []OrderItem) Order {
 		Items:       groupedItems,
 		TotalAmount: totalAmount,
 		CreatedAt:   time.Now().UTC(),
-	}
+	}, nil
 }

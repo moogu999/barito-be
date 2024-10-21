@@ -77,6 +77,16 @@ func TestCreateOrder(t *testing.T) {
 			},
 			wantStatusCode: http.StatusNotFound,
 		},
+		{
+			name:    "purchase quantity invalid",
+			request: request,
+			mockFunc: func(ctx context.Context, mock *mock.MockService) {
+				mock.CreateOrderFunc = func(ctx context.Context, userID int64, items []usecase.CartItem) (int64, error) {
+					return 0, entity.ErrInvalidQuantity
+				}
+			},
+			wantStatusCode: http.StatusUnprocessableEntity,
+		},
 	}
 
 	for _, tt := range tests {

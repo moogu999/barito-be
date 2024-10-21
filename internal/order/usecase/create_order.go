@@ -71,7 +71,10 @@ func (s *Service) CreateOrder(ctx context.Context, userID int64, cartItems []Car
 		}
 	}()
 
-	order := entity.NewOrder(userID, constructOrderItems(cartItems, books))
+	order, err := entity.NewOrder(userID, constructOrderItems(cartItems, books))
+	if err != nil {
+		return 0, err
+	}
 
 	err = s.orderRepo.CreateOrder(ctx, tx, &order)
 	if err != nil {

@@ -249,6 +249,40 @@ func TestCreateOrder(t *testing.T) {
 			want:    0,
 			wantErr: true,
 		},
+		{
+			name:   "purchase quantity is less than 1",
+			userID: userID,
+			cartItems: []CartItem{
+				{
+					BookID: 1,
+					Qty:    1,
+				},
+				{
+					BookID: 1,
+					Qty:    1,
+				},
+				{
+					BookID: 2,
+					Qty:    -1,
+				},
+			},
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
+					return &user, nil
+				}
+				mockBookRepo.GetBooksByIDsFunc = func(ctx context.Context, ids []int64) ([]*bookEntity.Book, error) {
+					return books, nil
+				}
+				mockOrderRepo.BeginTxFunc = func(ctx context.Context) (*sql.Tx, error) {
+					return &sql.Tx{}, nil
+				}
+				mockOrderRepo.RollbackTxFunc = func(tx *sql.Tx) error {
+					return nil
+				}
+			},
+			want:    0,
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {

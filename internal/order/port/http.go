@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	bookEntity "github.com/moogu999/barito-be/internal/book/domain/entity"
 	"github.com/moogu999/barito-be/internal/common/response"
+	"github.com/moogu999/barito-be/internal/order/domain/entity"
 	"github.com/moogu999/barito-be/internal/order/port/oapi"
 	"github.com/moogu999/barito-be/internal/order/usecase"
 	userEntity "github.com/moogu999/barito-be/internal/user/domain/entity"
@@ -44,6 +45,10 @@ func (h *httpServer) CreateOrder(ctx context.Context, request oapi.CreateOrderRe
 
 		if errors.Is(err, userEntity.ErrUserNotFound) || errors.Is(err, bookEntity.ErrBooksNotFound) {
 			return oapi.CreateOrder404JSONResponse(res), nil
+		}
+
+		if errors.Is(err, entity.ErrInvalidQuantity) {
+			return oapi.CreateOrder422JSONResponse(res), nil
 		}
 
 		return oapi.CreateOrder500JSONResponse(res), nil
