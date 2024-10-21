@@ -17,7 +17,7 @@ testcases:
     - result.bodyjson.books.books199 ShouldNotBeNil
     - result.bodyjson.books.books200 ShouldBeNil
 
-- name: find author
+- name: find books by author
   steps:
   - type: http
     method: GET
@@ -32,7 +32,7 @@ testcases:
     - result.bodyjson.books.books7 ShouldNotBeNil
     - result.bodyjson.books.books8 ShouldBeNil
 
-- name: find title
+- name: find books by title
   steps:
   - type: http
     method: GET
@@ -47,7 +47,7 @@ testcases:
     - result.bodyjson.books.books0 ShouldNotBeNil
     - result.bodyjson.books.books1 ShouldBeNil
 
-- name: find author and title
+- name: find books by author and title
   steps:
   - type: http
     method: GET

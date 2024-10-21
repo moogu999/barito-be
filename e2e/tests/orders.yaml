@@ -8,7 +8,7 @@ vars:
       }
   newOrder: >-
       {
-        "userId": {{.createANewSession.userId}},
+        "userId": {{.create-a-new-session.userId}},
         "items": [
           {
             "bookId": 1,
@@ -44,7 +44,7 @@ vars:
       }
   newOrderWithUnregisteredBooks: >-
       {
-        "userId": {{.createANewSession.userId}},
+        "userId": {{.create-a-new-session.userId}},
         "items": [
           {
             "bookId": 9999,
@@ -62,7 +62,7 @@ vars:
       }
   newOrderWithInvalidQuantity: >-
       {
-        "userId": {{.createANewSession.userId}},
+        "userId": {{.create-a-new-session.userId}},
         "items": [
           {
             "bookId": 1,
@@ -81,7 +81,7 @@ vars:
 
 testcases:
 # /v1/orders
-- name: createANewUser
+- name: create-a-new-user
   steps:
   - type: http
     method: POST
@@ -94,7 +94,7 @@ testcases:
     assertions:
     - result.statuscode ShouldEqual 201
 
-- name: createANewSession
+- name: create-a-new-session
   steps:
   - type: http
     method: POST
@@ -168,7 +168,7 @@ testcases:
   - type: http
     method: GET
     query_parameters:
-      userId: '{{.createANewSession.userId}}'
+      userId: '{{.create-a-new-session.userId}}'
     url: "{{.url}}/v1/orders"
     retry: 1
     delay: 2

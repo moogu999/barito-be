@@ -6,17 +6,17 @@ vars:
         "email": "testing@testing.com",
         "password": "testing"
       }
-  invalidEmailbody: >-
+  invalidEmailBody: >-
       {
         "email": "testing",
         "password": "testing"
       }
-  notRegisteredbody: >-
+  notRegisteredBody: >-
       {
         "email": "abc@testing.com",
         "password": "testing"
       }
-  incorrectPaswordbody: >-
+  incorrectPaswordBody: >-
       {
         "email": "testing@testing.com",
         "password": "abc"
@@ -57,7 +57,7 @@ testcases:
     headers:
       Content-Type: application/json
     url: "{{.url}}/v1/users"
-    body: '{{.invalidEmailbody}}'
+    body: '{{.invalidEmailBody}}'
     retry: 1
     delay: 2
     assertions:
@@ -85,7 +85,7 @@ testcases:
     headers:
       Content-Type: application/json
     url: "{{.url}}/v1/sessions"
-    body: '{{.notRegisteredbody}}'
+    body: '{{.notRegisteredBody}}'
     retry: 1
     delay: 2
     assertions:
@@ -98,7 +98,7 @@ testcases:
     headers:
       Content-Type: application/json
     url: "{{.url}}/v1/sessions"
-    body: '{{.incorrectPaswordbody}}'
+    body: '{{.incorrectPaswordBody}}'
     retry: 1
     delay: 2
     assertions:
