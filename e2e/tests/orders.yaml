@@ -1,0 +1,162 @@
+name: Orders Test Suite
+vars:
+  url: http://go:8090
+  userBody: >-
+      {
+        "email": "user@testing.com",
+        "password": "testing"
+      }
+  newOrder: >-
+      {
+        "userId": {{.createANewSession.userId}},
+        "items": [
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 2,
+            "qty": 1
+          }
+        ]
+      }
+  newOrderWithUnregisteredUser: >-
+      {
+        "userId": 9999,
+        "items": [
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 2,
+            "qty": 1
+          }
+        ]
+      }
+  newOrderWithUnregisteredBooks: >-
+      {
+        "userId": 9999,
+        "items": [
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 1,
+            "qty": 1
+          },
+          {
+            "bookId": 9999,
+            "qty": 1
+          }
+        ]
+      }
+
+testcases:
+# /v1/orders
+- name: createANewUser
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/users"
+    body: '{{.userBody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 201
+
+- name: createANewSession
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/sessions"
+    body: '{{.userBody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 201
+    vars:
+      userId:
+        from: result.bodyjson.id
+
+- name: create a new order
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/orders"
+    body: '{{.newOrder}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 201
+    - result.bodyjson ShouldContainKey id
+
+- name: create a new order with unregistered user
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/orders"
+    body: '{{.newOrderWithUnregisteredUser}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 404
+
+- name: create a new order with unregistered books
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/orders"
+    body: '{{.newOrderWithUnregisteredUser}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 404
+
+- name: get user orders
+  steps:
+  - type: http
+    method: GET
+    query_parameters:
+      userId: '{{.createANewSession.userId}}'
+    url: "{{.url}}/v1/orders"
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey orders
+    - result.bodyjson.orders.orders0 ShouldNotBeNil
+    - result.bodyjson.orders.orders1 ShouldBeNil
+
+- name: user with no orders
+  steps:
+  - type: http
+    method: GET
+    query_parameters:
+      userId: '9999'
+    url: "{{.url}}/v1/orders"
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey orders
+    - result.bodyjson.orders.orders0 ShouldBeNil

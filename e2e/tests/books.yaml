@@ -1,0 +1,78 @@
+name: Books Test Suite
+vars:
+  url: http://go:8090
+
+testcases:
+# /v1/books
+- name: find books
+  steps:
+  - type: http
+    method: GET
+    url: "{{.url}}/v1/books"
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey books
+    - result.bodyjson.books.books199 ShouldNotBeNil
+    - result.bodyjson.books.books200 ShouldBeNil
+
+- name: find author
+  steps:
+  - type: http
+    method: GET
+    url: "{{.url}}/v1/books"
+    query_parameters:
+      author: Author 2
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey books
+    - result.bodyjson.books.books7 ShouldNotBeNil
+    - result.bodyjson.books.books8 ShouldBeNil
+
+- name: find title
+  steps:
+  - type: http
+    method: GET
+    url: "{{.url}}/v1/books"
+    query_parameters:
+      title: Book Title 1
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey books
+    - result.bodyjson.books.books0 ShouldNotBeNil
+    - result.bodyjson.books.books1 ShouldBeNil
+
+- name: find author and title
+  steps:
+  - type: http
+    method: GET
+    url: "{{.url}}/v1/books"
+    query_parameters:
+      author: Author 2
+      title: Book Title 3
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson ShouldContainKey books
+    - result.bodyjson.books.books0 ShouldNotBeNil
+    - result.bodyjson.books.books1 ShouldBeNil
+
+- name: test case sensivity
+  steps:
+  - type: http
+    method: GET
+    url: "{{.url}}/v1/books"
+    query_parameters:
+      author: autHoR 1
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 200
+    - result.bodyjson.books.books0 ShouldNotBeNil
+    - result.bodyjson.books.books1 ShouldBeNil

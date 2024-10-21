@@ -1,0 +1,105 @@
+name: Users Test Suite
+vars:
+  url: http://go:8090
+  userBody: >-
+      {
+        "email": "testing@testing.com",
+        "password": "testing"
+      }
+  invalidEmailbody: >-
+      {
+        "email": "testing",
+        "password": "testing"
+      }
+  notRegisteredbody: >-
+      {
+        "email": "abc@testing.com",
+        "password": "testing"
+      }
+  incorrectPaswordbody: >-
+      {
+        "email": "testing@testing.com",
+        "password": "abc"
+      }
+
+testcases:
+# /v1/users
+- name: create a new user
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/users"
+    body: '{{.userBody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 201
+
+- name: duplicate email
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/users"
+    body: '{{.userBody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 409
+
+- name: invalid email format
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/users"
+    body: '{{.invalidEmailbody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 400
+
+# /v1/sessions
+- name: create a new session
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/sessions"
+    body: '{{.userBody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 201
+    - result.bodyjson ShouldContainKey id
+
+- name: email is not registered
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/sessions"
+    body: '{{.notRegisteredbody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 404
+
+- name: incorrect password
+  steps:
+  - type: http
+    method: POST
+    headers:
+      Content-Type: application/json
+    url: "{{.url}}/v1/sessions"
+    body: '{{.incorrectPaswordbody}}'
+    retry: 1
+    delay: 2
+    assertions:
+    - result.statuscode ShouldEqual 401

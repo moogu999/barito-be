@@ -20,15 +20,15 @@ func NewOrder(userID int64, items []OrderItem) Order {
 	for _, val := range items {
 		totalAmount += val.Price
 
-		if item, ok := itemsMap[val.ID]; ok {
+		if item, ok := itemsMap[val.BookID]; ok {
 			item.Qty += val.Qty
-			itemsMap[val.ID] = item
+			itemsMap[val.BookID] = item
 		} else {
-			itemsMap[val.ID] = val
+			itemsMap[val.BookID] = val
 		}
 	}
 
-	groupedItems := make([]OrderItem, len(itemsMap))
+	groupedItems := make([]OrderItem, 0)
 	for _, val := range itemsMap {
 		groupedItems = append(groupedItems, val)
 	}

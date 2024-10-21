@@ -18,8 +18,8 @@ import (
 func TestFindBooks(t *testing.T) {
 	t.Parallel()
 
-	title := "john"
-	author := "doe"
+	title := "John"
+	author := "Doe"
 	request := oapi.FindBooksRequestObject{
 		Params: oapi.FindBooksParams{
 			Title:  &title,
@@ -69,7 +69,15 @@ func TestFindBooks(t *testing.T) {
 			},
 			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.FindBooksFunc = func(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error) {
-					return nil, nil
+					return []*entity.Book{
+						{
+							ID:     1,
+							Title:  "John",
+							Author: "Doe",
+							ISBN:   "testing",
+							Price:  100.0,
+						},
+					}, nil
 				}
 			},
 			wantStatusCode: http.StatusOK,
@@ -83,7 +91,15 @@ func TestFindBooks(t *testing.T) {
 			},
 			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.FindBooksFunc = func(ctx context.Context, params repository.BookFilter) ([]*entity.Book, error) {
-					return nil, nil
+					return []*entity.Book{
+						{
+							ID:     1,
+							Title:  "John",
+							Author: "Doe",
+							ISBN:   "testing",
+							Price:  100.0,
+						},
+					}, nil
 				}
 			},
 			wantStatusCode: http.StatusOK,

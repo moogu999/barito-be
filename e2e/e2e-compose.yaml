@@ -3,7 +3,7 @@ services:
     image: barito-be:latest
     build: ../.
     ports:
-      - 8080:8080
+      - 8090:8080
     env_file:
       - .env
     command: >
@@ -23,7 +23,7 @@ services:
       MYSQL_PASSWORD: '12345678'
       MYSQL_ROOT_PASSWORD: '12345678'
     ports:
-      - 3306:3306
+      - 3307:3306
     command: mysqld --default-authentication-plugin=mysql_native_password
 
   venom:
@@ -35,7 +35,7 @@ services:
       - ./results:/workdir/results
     command: >
       bash -c "
-        ./wait-for-it.sh -t 0 go:8080 -- \
+        ./wait-for-it.sh -t 0 go:8090 -- \
         mysql --user=testing --password=12345678 -h db -P 3306 test_db < seeds.sql \
         /usr/local/venom run ./tests/*.y*ml
       "

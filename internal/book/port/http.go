@@ -42,7 +42,7 @@ func (h *httpServer) FindBooks(ctx context.Context, request oapi.FindBooksReques
 		}), nil
 	}
 
-	books := make([]oapi.Book, len(data))
+	books := make([]oapi.Book, 0)
 	for _, val := range data {
 		books = append(books, oapi.Book{
 			Id:     val.ID,

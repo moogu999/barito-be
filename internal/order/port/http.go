@@ -28,7 +28,7 @@ type httpServer struct {
 }
 
 func (h *httpServer) CreateOrder(ctx context.Context, request oapi.CreateOrderRequestObject) (oapi.CreateOrderResponseObject, error) {
-	cartItems := make([]usecase.CartItem, len(request.Body.Items))
+	cartItems := make([]usecase.CartItem, 0)
 	for _, val := range request.Body.Items {
 		cartItems = append(cartItems, usecase.CartItem{
 			BookID: val.BookId,
@@ -60,9 +60,9 @@ func (h *httpServer) FindOrders(ctx context.Context, request oapi.FindOrdersRequ
 		return oapi.FindOrders500JSONResponse(oapi.CreateOrder500JSONResponse{Message: err.Error()}), nil
 	}
 
-	res := make([]oapi.Order, len(orders))
+	res := make([]oapi.Order, 0)
 	for _, val := range orders {
-		items := make([]oapi.ItemResponse, len(val.Items))
+		items := make([]oapi.ItemResponse, 0)
 		for _, item := range val.Items {
 			items = append(items, oapi.ItemResponse{
 				Id:     &item.ID,
