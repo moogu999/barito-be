@@ -80,7 +80,7 @@ func TestCreateOrder(t *testing.T) {
 					order.ID = 1
 					return nil
 				}
-				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, item *entity.OrderItem) error {
+				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error {
 					return nil
 				}
 			},
@@ -215,7 +215,7 @@ func TestCreateOrder(t *testing.T) {
 					order.ID = 1
 					return nil
 				}
-				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, item *entity.OrderItem) error {
+				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error {
 					return err
 				}
 			},
@@ -243,7 +243,7 @@ func TestCreateOrder(t *testing.T) {
 					order.ID = 1
 					return nil
 				}
-				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, item *entity.OrderItem) error {
+				mockOrderRepo.CreateOrderItemFunc = func(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error {
 					return nil
 				}
 			},

@@ -79,7 +79,7 @@ func (s *Service) CreateOrder(ctx context.Context, userID int64, cartItems []Car
 	}
 
 	for _, item := range order.Items {
-		err := s.orderRepo.CreateOrderItem(ctx, tx, &item)
+		err := s.orderRepo.CreateOrderItem(ctx, tx, order.ID, &item)
 		if err != nil {
 			return 0, err
 		}

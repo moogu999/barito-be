@@ -214,7 +214,8 @@ func TestCreateOrder(t *testing.T) {
 func TestCreateOrderItem(t *testing.T) {
 	t.Parallel()
 
-	query := `INSERT INTO order_items (book_id,qty,price) VALUES (?,?,?)`
+	query := `INSERT INTO order_items (order_id,book_id,qty,price) VALUES (?,?,?,?)`
+	var orderID int64 = 1
 	item := &entity.OrderItem{
 		BookID: 1,
 		Qty:    1,
@@ -225,6 +226,7 @@ func TestCreateOrderItem(t *testing.T) {
 	tests := []struct {
 		name    string
 		setup   func(mockDB sqlmock.Sqlmock)
+		orderID int64
 		item    *entity.OrderItem
 		wantErr bool
 	}{
@@ -235,9 +237,10 @@ func TestCreateOrderItem(t *testing.T) {
 
 				mockDB.ExpectBegin()
 				mockDB.ExpectExec(query).
-					WithArgs(item.BookID, item.Qty, item.Price).
+					WithArgs(orderID, item.BookID, item.Qty, item.Price).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 			},
+			orderID: orderID,
 			item:    item,
 			wantErr: false,
 		},
@@ -250,6 +253,7 @@ func TestCreateOrderItem(t *testing.T) {
 				mockDB.ExpectExec(query).
 					WillReturnError(err)
 			},
+			orderID: orderID,
 			item:    item,
 			wantErr: true,
 		},
@@ -272,7 +276,7 @@ func TestCreateOrderItem(t *testing.T) {
 			repo := NewOrderRepository(db)
 
 			tx, _ := repo.BeginTx(ctx)
-			err = repo.CreateOrderItem(ctx, tx, tt.item)
+			err = repo.CreateOrderItem(ctx, tx, tt.orderID, tt.item)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateOrderItem() error = %v, wantErr %v", err, tt.wantErr)

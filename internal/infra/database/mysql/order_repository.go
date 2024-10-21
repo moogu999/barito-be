@@ -55,10 +55,10 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, tx *sql.Tx, order *en
 	return nil
 }
 
-func (r *OrderRepository) CreateOrderItem(ctx context.Context, tx *sql.Tx, item *entity.OrderItem) error {
+func (r *OrderRepository) CreateOrderItem(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error {
 	builder := sq.Insert("order_items").
-		Columns("book_id", "qty", "price").
-		Values(item.BookID, item.Qty, item.Price)
+		Columns("order_id", "book_id", "qty", "price").
+		Values(orderID, item.BookID, item.Qty, item.Price)
 	q, args, err := builder.ToSql()
 	if err != nil {
 		return err

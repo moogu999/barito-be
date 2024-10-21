@@ -14,5 +14,5 @@ type OrderRepository interface {
 
 	CreateOrder(ctx context.Context, tx *sql.Tx, order *entity.Order) error
 
-	CreateOrderItem(ctx context.Context, tx *sql.Tx, item *entity.OrderItem) error
+	CreateOrderItem(ctx context.Context, tx *sql.Tx, orderID int64, item *entity.OrderItem) error
 }

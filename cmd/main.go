@@ -10,6 +10,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/moogu999/barito-be/internal/book"
 	"github.com/moogu999/barito-be/internal/infra/database"
+	"github.com/moogu999/barito-be/internal/order"
 	"github.com/moogu999/barito-be/internal/user"
 )
 
@@ -31,6 +32,10 @@ func main() {
 			Router: r,
 		})
 		book.NewApp(book.Dependency{
+			DB:     db,
+			Router: r,
+		})
+		order.NewApp(order.Dependency{
 			DB:     db,
 			Router: r,
 		})
