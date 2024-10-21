@@ -3,31 +3,11 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/moogu999/barito-be/internal/user/domain/entity"
 	"github.com/moogu999/barito-be/internal/user/domain/repository"
 )
-
-// @TODO refactor this
-type UserModel struct {
-	id        int64
-	email     string
-	password  string
-	createdAt time.Time
-	createdBy string
-}
-
-func (u UserModel) toUserEntity() entity.User {
-	return entity.User{
-		ID:        u.id,
-		Email:     u.email,
-		Password:  u.password,
-		CreatedAt: u.createdAt,
-		CreatedBy: u.createdBy,
-	}
-}
 
 type UserRepository struct {
 	db *sql.DB
@@ -55,15 +35,15 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*ent
 	}
 	defer rows.Close()
 
-	users := make([]UserModel, 0)
+	users := make([]entity.User, 0)
 	for rows.Next() {
-		var user UserModel
+		var user entity.User
 		err = rows.Scan(
-			&user.id,
-			&user.email,
-			&user.password,
-			&user.createdAt,
-			&user.createdBy,
+			&user.ID,
+			&user.Email,
+			&user.Password,
+			&user.CreatedAt,
+			&user.CreatedBy,
 		)
 		if err != nil {
 			return nil, err
@@ -76,7 +56,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*ent
 		return nil, nil
 	}
 
-	user := users[0].toUserEntity()
+	user := users[0]
 
 	return &user, nil
 }
@@ -121,15 +101,15 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*entity.Use
 	}
 	defer rows.Close()
 
-	users := make([]UserModel, 0)
+	users := make([]entity.User, 0)
 	for rows.Next() {
-		var user UserModel
+		var user entity.User
 		err = rows.Scan(
-			&user.id,
-			&user.email,
-			&user.password,
-			&user.createdAt,
-			&user.createdBy,
+			&user.ID,
+			&user.Email,
+			&user.Password,
+			&user.CreatedAt,
+			&user.CreatedBy,
 		)
 		if err != nil {
 			return nil, err
@@ -142,7 +122,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*entity.Use
 		return nil, nil
 	}
 
-	user := users[0].toUserEntity()
+	user := users[0]
 
 	return &user, nil
 }

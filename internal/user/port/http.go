@@ -12,7 +12,7 @@ import (
 	"github.com/moogu999/barito-be/internal/user/usecase"
 )
 
-func NewHandler(r chi.Router, svc usecase.User) http.Handler {
+func NewHandler(r chi.Router, svc usecase.UserUseCase) http.Handler {
 	si := oapi.NewStrictHandlerWithOptions(&httpServer{svc}, nil, oapi.StrictHTTPServerOptions{
 		RequestErrorHandlerFunc:  response.ErrorHandlerFunc(),
 		ResponseErrorHandlerFunc: response.ErrorHandlerFunc(),
@@ -22,7 +22,7 @@ func NewHandler(r chi.Router, svc usecase.User) http.Handler {
 }
 
 type httpServer struct {
-	svc usecase.User
+	svc usecase.UserUseCase
 }
 
 func (h *httpServer) CreateUser(ctx context.Context, request oapi.CreateUserRequestObject) (oapi.CreateUserResponseObject, error) {

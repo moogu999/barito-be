@@ -2,6 +2,8 @@ package database
 
 import (
 	"testing"
+
+	"github.com/moogu999/barito-be/cmd/config"
 )
 
 func TestNewSQL(t *testing.T) {
@@ -27,7 +29,13 @@ func TestNewSQL(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.setup(t)
 
-			got := NewSQL()
+			got := NewSQL(config.SQLConfig{
+				Username:     "testing",
+				Password:     "testing",
+				Host:         "testing",
+				Port:         "testing",
+				DatabaseName: "testing",
+			})
 
 			if (got != nil) != tt.wantDB {
 				t.Errorf("NewSQL() = %v, wantDB %v", got, tt.wantDB)

@@ -44,17 +44,17 @@ func TestNewUser(t *testing.T) {
 
 			if tt.wantErr {
 				if err == nil {
-					t.Error("NewUser() expected err but got nil") // @TODO rename expected
+					t.Error("NewUser() want err but got nil")
 				}
 			} else {
 				if tt.want.ID != got.ID {
-					t.Errorf("NewUser().ID = %d, expected %d", got.ID, tt.want.ID)
+					t.Errorf("NewUser().ID = %d, want %d", got.ID, tt.want.ID)
 				}
 				if tt.want.Email != got.Email {
-					t.Errorf("NewUser().Email = %s, expected %s", got.Email, tt.want.Email)
+					t.Errorf("NewUser().Email = %s, want %s", got.Email, tt.want.Email)
 				}
 				if tt.want.CreatedBy != got.CreatedBy {
-					t.Errorf("NewUser().CreatedBy = %s, expected %s", got.CreatedBy, tt.want.CreatedBy)
+					t.Errorf("NewUser().CreatedBy = %s, want %s", got.CreatedBy, tt.want.CreatedBy)
 				}
 				if got.CreatedAt.IsZero() {
 					t.Error("NewUser().CreatedAt.IsZero() == true")
@@ -96,7 +96,7 @@ func TestVerifyPassword(t *testing.T) {
 			got := tt.user.VerifyPassword(tt.password)
 
 			if tt.want != got {
-				t.Errorf("VerifyPassword() = %t, expected %t", got, tt.want)
+				t.Errorf("VerifyPassword() = %t, want %t", got, tt.want)
 			}
 		})
 	}

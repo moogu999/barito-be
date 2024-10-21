@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -8,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/moogu999/barito-be/cmd/config"
 	"github.com/moogu999/barito-be/internal/book"
 	"github.com/moogu999/barito-be/internal/infra/database"
 	"github.com/moogu999/barito-be/internal/order"
@@ -15,7 +17,11 @@ import (
 )
 
 func main() {
-	db := database.NewSQL()
+	ctx := context.Background()
+
+	cfg := config.Get(ctx)
+
+	db := database.NewSQL(cfg.SQLConfig)
 
 	r := chi.NewRouter()
 
@@ -27,7 +33,7 @@ func main() {
 	r.Use(middleware.Timeout(60000 * time.Millisecond))
 
 	r.Route("/", func(r chi.Router) {
-		user.New(user.Dependency{
+		user.NewApp(user.Dependency{
 			DB:     db,
 			Router: r,
 		})
@@ -41,6 +47,5 @@ func main() {
 		})
 	})
 
-	// @TODO create config file
-	http.ListenAndServe(fmt.Sprintf(":%d", 8080), r)
+	http.ListenAndServe(fmt.Sprintf(":%s", cfg.HTTPConfig.Port), r)
 }

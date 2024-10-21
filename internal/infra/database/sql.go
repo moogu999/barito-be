@@ -6,11 +6,10 @@ import (
 	"log/slog"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/moogu999/barito-be/cmd/config"
 )
 
-func NewSQL() *sql.DB {
-	cfg := LoadSQLConfig()
-
+func NewSQL(cfg config.SQLConfig) *sql.DB {
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=false&parseTime=true",
 		cfg.Username,
 		cfg.Password,

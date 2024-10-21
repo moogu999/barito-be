@@ -19,23 +19,20 @@ import (
 func TestCreateUser(t *testing.T) {
 	t.Parallel()
 
-	// @TODO update the request
-	request := oapi.CreateUserRequestObject{
-		Body: &oapi.NewUser{
-			Email:    types.Email("testing@testing.com"),
-			Password: "testing",
-		},
+	request := oapi.NewUser{
+		Email:    types.Email("testing@testing.com"),
+		Password: "testing",
 	}
 	tests := []struct {
 		name           string
-		request        oapi.CreateUserRequestObject
-		mockFunc       func(ctx context.Context, mockService *mock.Service)
+		request        oapi.NewUser
+		mockFunc       func(ctx context.Context, mockService *mock.MockService)
 		wantStatusCode int
 	}{
 		{
 			name:    "success",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateUserFunc = func(ctx context.Context, email, password string) error {
 					return nil
 				}
@@ -45,7 +42,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			name:    "error",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateUserFunc = func(ctx context.Context, email, password string) error {
 					return errors.New("err")
 				}
@@ -55,7 +52,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			name:    "email is already being used",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateUserFunc = func(ctx context.Context, email, password string) error {
 					return entity.ErrEmailIsUsed
 				}
@@ -70,7 +67,7 @@ func TestCreateUser(t *testing.T) {
 
 			ctx := context.Background()
 
-			mockService := mock.Service{}
+			mockService := mock.MockService{}
 			tt.mockFunc(ctx, &mockService)
 
 			r := chi.NewRouter()
@@ -106,13 +103,13 @@ func TestCreateSession(t *testing.T) {
 	tests := []struct {
 		name           string
 		request        oapi.CreateUserRequestObject
-		mockFunc       func(ctx context.Context, mockService *mock.Service)
+		mockFunc       func(ctx context.Context, mockService *mock.MockService)
 		wantStatusCode int
 	}{
 		{
 			name:    "success",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateSessionFunc = func(ctx context.Context, email, password string) (int64, error) {
 					return 1, nil
 				}
@@ -122,7 +119,7 @@ func TestCreateSession(t *testing.T) {
 		{
 			name:    "error",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateSessionFunc = func(ctx context.Context, email, password string) (int64, error) {
 					return 0, errors.New("err")
 				}
@@ -132,7 +129,7 @@ func TestCreateSession(t *testing.T) {
 		{
 			name:    "email is not registered",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateSessionFunc = func(ctx context.Context, email, password string) (int64, error) {
 					return 0, entity.ErrNotRegistered
 				}
@@ -142,7 +139,7 @@ func TestCreateSession(t *testing.T) {
 		{
 			name:    "incorrect password",
 			request: request,
-			mockFunc: func(ctx context.Context, mockService *mock.Service) {
+			mockFunc: func(ctx context.Context, mockService *mock.MockService) {
 				mockService.CreateSessionFunc = func(ctx context.Context, email, password string) (int64, error) {
 					return 0, entity.ErrIncorrectPassword
 				}
@@ -157,7 +154,7 @@ func TestCreateSession(t *testing.T) {
 
 			ctx := context.Background()
 
-			mockService := mock.Service{}
+			mockService := mock.MockService{}
 			tt.mockFunc(ctx, &mockService)
 
 			r := chi.NewRouter()

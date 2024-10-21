@@ -22,7 +22,7 @@ func TestCreateSession(t *testing.T) {
 		name     string
 		email    string
 		password string
-		mockFunc func(ctx context.Context, mockRepo *mock.UserRepository)
+		mockFunc func(ctx context.Context, mockRepo *mock.MockUserRepository)
 		want     int64
 		wantErr  bool
 	}{
@@ -30,7 +30,7 @@ func TestCreateSession(t *testing.T) {
 			name:     "success",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return &user, nil
 				}
@@ -42,7 +42,7 @@ func TestCreateSession(t *testing.T) {
 			name:     "repo.GetUserByEmail error",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, err
 				}
@@ -54,7 +54,7 @@ func TestCreateSession(t *testing.T) {
 			name:     "email is not registered",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, nil
 				}
@@ -66,7 +66,7 @@ func TestCreateSession(t *testing.T) {
 			name:     "incorrect password",
 			email:    email,
 			password: "1234567890",
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return &user, nil
 				}
@@ -82,7 +82,7 @@ func TestCreateSession(t *testing.T) {
 
 			ctx := context.Background()
 
-			mockRepo := mock.UserRepository{}
+			mockRepo := mock.MockUserRepository{}
 			tt.mockFunc(ctx, &mockRepo)
 
 			service := NewService(mockRepo)

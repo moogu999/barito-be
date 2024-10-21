@@ -76,7 +76,7 @@ func TestFindOrders(t *testing.T) {
 			ctx := context.Background()
 
 			mockOrderRepo := mock.MockOrderRepository{}
-			mockUserRepo := mockUserRepo.UserRepository{}
+			mockUserRepo := mockUserRepo.MockUserRepository{}
 			mockBookRepo := mockBookRepo.MockBookRepository{}
 			tt.mockFunc(ctx, &mockOrderRepo)
 

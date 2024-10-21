@@ -53,7 +53,7 @@ func TestCreateOrder(t *testing.T) {
 		cartItems []CartItem
 		mockFunc  func(ctx context.Context,
 			mockOrderRepo *mock.MockOrderRepository,
-			mockUserRepo *mockUserRepo.UserRepository,
+			mockUserRepo *mockUserRepo.MockUserRepository,
 			mockBookRepo *mockBookRepo.MockBookRepository)
 		want    int64
 		wantErr bool
@@ -62,7 +62,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "success",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -90,7 +90,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "userRepo.GetUserByID error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return nil, err
 				}
@@ -105,7 +105,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "bookRepo.GetBooksByIDs error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -120,7 +120,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "user is not found",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return nil, nil
 				}
@@ -135,7 +135,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "books are not found",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -155,7 +155,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "orderRepo.BeginTx error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -173,7 +173,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "orderRepo.CreateOrder error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -197,7 +197,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "orderRepo.CreateOrderItem error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -225,7 +225,7 @@ func TestCreateOrder(t *testing.T) {
 			name:      "orderRepo.CommitTx error",
 			userID:    userID,
 			cartItems: cartItems,
-			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.UserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
+			mockFunc: func(ctx context.Context, mockOrderRepo *mock.MockOrderRepository, mockUserRepo *mockUserRepo.MockUserRepository, mockBookRepo *mockBookRepo.MockBookRepository) {
 				mockUserRepo.GetUserByIDFunc = func(ctx context.Context, id int64) (*userEntity.User, error) {
 					return &user, nil
 				}
@@ -258,7 +258,7 @@ func TestCreateOrder(t *testing.T) {
 			ctx := context.Background()
 
 			mockOrderRepo := mock.MockOrderRepository{}
-			mockUserRepo := mockUserRepo.UserRepository{}
+			mockUserRepo := mockUserRepo.MockUserRepository{}
 			mockBookRepo := mockBookRepo.MockBookRepository{}
 			tt.mockFunc(ctx, &mockOrderRepo, &mockUserRepo, &mockBookRepo)
 

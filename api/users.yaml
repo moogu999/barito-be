@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Users
-  version: 0.0.1
+  version: v1
 tags:
   - name: Users
 paths:

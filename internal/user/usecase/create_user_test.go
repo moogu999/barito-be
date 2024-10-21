@@ -20,14 +20,14 @@ func TestCreateUser(t *testing.T) {
 		name     string
 		email    string
 		password string
-		mockFunc func(ctx context.Context, mockRepo *mock.UserRepository)
+		mockFunc func(ctx context.Context, mockRepo *mock.MockUserRepository)
 		wantErr  bool
 	}{
 		{
 			name:     "success",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, nil
 				}
@@ -39,7 +39,7 @@ func TestCreateUser(t *testing.T) {
 			name:     "email is already being used",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return &entity.User{Email: email}, nil
 				}
@@ -50,7 +50,7 @@ func TestCreateUser(t *testing.T) {
 			name:     "password is too long",
 			email:    email,
 			password: "7DA1LRHz7KsRCS0dvO5A1CvjE5jDXDh2Z9iPeN1741260y8a9K2ze738aJxOztz7TRQ8lBLdZ",
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, nil
 				}
@@ -61,7 +61,7 @@ func TestCreateUser(t *testing.T) {
 			name:     "repo.GetUserByEmail error",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, err
 				}
@@ -72,7 +72,7 @@ func TestCreateUser(t *testing.T) {
 			name:     "repo.CreateUser error",
 			email:    email,
 			password: password,
-			mockFunc: func(ctx context.Context, mockRepo *mock.UserRepository) {
+			mockFunc: func(ctx context.Context, mockRepo *mock.MockUserRepository) {
 				mockRepo.GetUserByEmailFunc = func(ctx context.Context, email string) (*entity.User, error) {
 					return nil, nil
 				}
@@ -88,7 +88,7 @@ func TestCreateUser(t *testing.T) {
 
 			ctx := context.Background()
 
-			mockRepo := mock.UserRepository{}
+			mockRepo := mock.MockUserRepository{}
 			tt.mockFunc(ctx, &mockRepo)
 
 			service := NewService(mockRepo)

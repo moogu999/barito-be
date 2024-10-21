@@ -16,7 +16,7 @@ func TestNewApp(t *testing.T) {
 		Router: r,
 	}
 
-	app := New(dep)
+	app := NewApp(dep)
 	if app == nil {
 		t.Error("app is nil")
 	}
