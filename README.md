@@ -144,10 +144,10 @@ No
 
 ## Test
 
-For unit testing, you can run the `test` task in the `Makefile`. Integration testing is done using [venom](https://github.com/ovh/venom), and you can find the test specifications in the `/e2e/test` directory. To run the integration tests, you just need to execute this command from inside the `/e2e` directory:
+For unit testing, you can run the `test` task in the `Makefile`. Integration testing is done using [venom](https://github.com/ovh/venom), and you can find the test specifications in the `/e2e/tests` directory. Before running the integration tests, please create a `/results` directory inside the `/e2e` directory. The test results will be stored there. To run the tests, you just need to execute this command from inside the `/e2e` directory:
 
 ```
-docker compose -f .\e2e-compose.yaml up --attach venom
+docker compose -f .\e2e-compose.yaml up
 ```
 
 The integration testing container has **separate environment variables** in case you want to run it alongside the regular service. After the tests are completed, you can also interact with the server via the integration testing container (**it doesn't auto-stop**).
